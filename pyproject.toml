@@ -4,10 +4,10 @@ version = "0.1.0"
 description = ""
 authors = ["Jonny <ji394su311203106@gmail.com>"]
 readme = "README.md"
-packages = [{include = "devmentor_be103_python"}]
+packages = [{include = "devmentor-BE103-python"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 fastapi = "^0.109.0"
 uvicorn = "^0.27.0"
 sqlalchemy = "^2.0.25"
