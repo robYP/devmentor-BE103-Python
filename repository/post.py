@@ -14,3 +14,6 @@ def create(db: Session, post: PostCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def get_post_by_id(db: Session, post_id: int):
+    return db.query(Post).filter(Post.id == post_id).first()

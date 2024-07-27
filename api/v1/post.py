@@ -16,6 +16,11 @@ def list_post(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     posts = repository.post.lists(db, skip=skip, limit=limit)
     return posts
 
+@router.get("/{post_id}")
+def get_post(post_id:int, db: Session= Depends(get_db)):
+    post = repository.post.get_post_by_id(db, post_id=post_id)
+    return post
+    
 
 @router.post("/")
 def create_post(post: PostCreate, db: Session = Depends(get_db)):
