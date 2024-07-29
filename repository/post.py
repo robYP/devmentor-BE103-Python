@@ -17,3 +17,11 @@ def create(db: Session, post: PostCreate):
 
 def get_post_by_id(db: Session, post_id: int):
     return db.query(Post).filter(Post.id == post_id).first()
+
+def delete_post_by_id(db: Session, post_id: int):
+    db_post = db.query(Post).filter(Post.id==post_id).first()
+    if not db_post:
+        return None
+    db.delete(db_post)
+    db.commit()
+    return db_post
