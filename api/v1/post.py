@@ -32,3 +32,10 @@ def delete_post(post_id:int, db: Session= Depends(get_db)):
     if post == None:
         raise HTTPException(status_code=404, detail="Post Not Found")
     return post
+
+@router.put("/{post_id}")
+def update_post(post: PostCreate, post_id:int, db: Session = Depends(get_db)):
+    post = repository.post.update_post_by_id(db=db, post_id=post_id, post=post)
+    if post == None:
+        raise HTTPException(status_code=404, detail="Post Not Found")
+    return post
