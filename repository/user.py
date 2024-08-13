@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 
 from database.user import User
-from schema.database.user import UserCreate
 
 def create(db: Session, user: User):
     db_user = user
@@ -9,3 +8,6 @@ def create(db: Session, user: User):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def get_user_by_username(db: Session, username:str):
+    return db.query(User).filter(User.username == username).first()

@@ -27,7 +27,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/token")
 
 
 class CreateUserRequest(BaseModel):
@@ -40,6 +40,31 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+    
+class UserInDB(User):
+    pass
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+def get_user(db, username: str):
+    if username in db:
+        user_dict = db[username]
+        return UserInDB(**user_dict)
+
+
+def authenticate_user(username: str, password: str, db):
+    user = repository.user.get_user_by_username(db, username)
+    if not user:
+        return False
+    if not verify_password(password, user.password):
+        return False
+    return user
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -52,11 +77,10 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return repository.user.create(db=db, user=user)
 
 
-
-# @router.get("/", status_code=status.HTTP_200_OK)
-# async def get_users(user:None, db: Session = Depends(get_db)):
-#     if user is None:
-#         raise HTTPException(status_code=401, detail="Authentication Failed")
-#     return {"User":user}
+@router.post("/get_users")
+async def get_users(username, password, db: Session = Depends(get_db)):
+    user = authenticate_user(username, password, db)
+    
+    return user
 
 
