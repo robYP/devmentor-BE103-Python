@@ -6,14 +6,13 @@ import repository.user
 from infrastructure.mysql import get_db
 from database.user import User
 from schema.database.user import UserCreate
-#-------------------
+from schema.database.token import Token, TokenData
 from datetime import timedelta, datetime
 from typing import Annotated
 import jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
-from pydantic import BaseModel
 
 
 router = APIRouter(
@@ -29,14 +28,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="v1/users/token")
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    username: str | None = None
     
 
 def verify_password(plain_password, hashed_password):
@@ -121,8 +112,9 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     )
     return Token(access_token=access_token, token_type="bearer")
 
-@router.get("/item")
-async def read_item(user: Annotated[dict, Depends(get_current_user)], db: Session = Depends(get_db)):
+
+@router.get("/currentUser")
+async def read_current_user(user: Annotated[dict, Depends(get_current_user)], db: Session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
     return {"User": user}
