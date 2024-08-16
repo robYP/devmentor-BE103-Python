@@ -17,3 +17,4 @@ class Event(Base):
 
     creator = relationship('User', back_populates='created_events')
     event_users = relationship('EventUser', back_populates='event')
+    records = relationship('Record', back_populates='event')
