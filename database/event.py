@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 
 from infrastructure.mysql import Base
+from database.user import User
+from database.event_user import EventUser
 
 
 class Event(Base):
