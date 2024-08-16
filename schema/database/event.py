@@ -9,12 +9,13 @@ class EventBase(BaseModel):
 
 
 class EventCreate(EventBase):
-    create_time: Optional[datetime] = None
-    creator_id: int
+    pass
 
 
 class Event(EventBase):
     id: int
-
+    creator_id: int
+    create_time: Optional[datetime] = None
+    
     class Config:
         orm_mode = True
