@@ -7,6 +7,6 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String(255))
+    username = Column(String(255), unique=True)
     password = Column(String(255))
-    langauge = Column(String(50))
+    language = Column(String(50), default="zh-TW")
