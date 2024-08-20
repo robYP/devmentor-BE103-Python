@@ -52,8 +52,8 @@ def upgrade() -> None:
         'record',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('action', sa.String(length=255), nullable=False),
-        sa.Column('user_id', sa.Integer, sa.ForeignKey('user.id'), nullable=False),
-        sa.Column('event_id', sa.Integer, sa.ForeignKey('event.id'), nullable=False),
+        sa.Column('user_id', sa.Integer, sa.ForeignKey('user.id'), nullable=True),
+        sa.Column('event_id', sa.Integer, sa.ForeignKey('event.id'), nullable=True),
     )
     pass
 

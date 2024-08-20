@@ -11,8 +11,8 @@ class Record(Base):
 
     id = Column(Integer, primary_key=True)
     action = Column(String(255), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    event_id = Column(Integer, ForeignKey('event.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id', ondelete='SET NULL'), nullable=True)
+    event_id = Column(Integer, ForeignKey('event.id', ondelete='SET NULL'), nullable=True)
     
     user = relationship("User", back_populates="records")
     event = relationship("Event", back_populates="records")

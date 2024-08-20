@@ -26,14 +26,6 @@ def delete_event_by_id(db:Session, event_id:int):
     return db_event
 
 
-def delete_post_by_id(db: Session, post_id: int):
-    db_post = db.query(Post).filter(Post.id==post_id).first()
-    if not db_post:
-        return None
-    db.delete(db_post)
-    db.commit()
-    return db_post
-
 def update_event_by_id(user: User, event_id: int, event: EventCreate, db: Session):
     db_event = db.query(Event).filter(Event.id == event_id).first()
     if not db_event:
