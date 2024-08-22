@@ -15,6 +15,7 @@ def search_event_by_id(db:Session, event_id:int):
 def get_events(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Event).offset(skip).limit(limit).all()
 
+
 def create_event(user: User, event: EventCreate, db: Session):
     db_event = Event(name = event.name, 
                      route= event.route,  

@@ -10,7 +10,7 @@ class EventUser(Base):
     id = Column(Integer, primary_key=True)
     event_id = Column(Integer, ForeignKey('event.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    notifiy_time = Column(DateTime, nullable=False)
+    notifiy_time = Column(DateTime, nullable=True)
     
     event = relationship('Event', back_populates='event_users')
     user = relationship('User', back_populates='event_users')
