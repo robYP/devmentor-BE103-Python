@@ -13,8 +13,15 @@ class Event(Base):
     name = Column(String(255), nullable=False)
     route = Column(String(255), nullable=False)
     create_time = Column(DateTime, server_default=func.now(), nullable=False)
-    creator_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    creator_id = Column(Integer, nullable=False)
 
-    creator = relationship('User', back_populates='created_events')
-    event_users = relationship('EventUser', back_populates='event')
-    records = relationship('Record', back_populates='event')
+    creator = relationship('User', 
+                           primaryjoin='foreign(Event.creator_id) == remote(User.id)',
+                           back_populates='created_events')
+    event_users = relationship('EventUser', 
+                               primaryjoin='Event.id == foreign(remote(EventUser.event_id))',
+                               back_populates='event')
+    records = relationship('Record',
+                           primaryjoin='Event.id == foreign(remote(Record.event_id))',
+                           back_populates='event',
+                           viewonly=True)

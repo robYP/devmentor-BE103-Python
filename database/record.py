@@ -11,8 +11,15 @@ class Record(Base):
 
     id = Column(Integer, primary_key=True)
     action = Column(String(255), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id', ondelete='SET NULL'), nullable=True)
-    event_id = Column(Integer, ForeignKey('event.id', ondelete='SET NULL'), nullable=True)
+    user_id = Column(Integer, nullable=True)
+    event_id = Column(Integer, nullable=True)
     
-    user = relationship("User", back_populates="records")
-    event = relationship("Event", back_populates="records")
+    user = relationship("User", 
+                        primaryjoin='foreign(Record.user_id) == remote(User.id)',
+                        foreign_keys=[user_id],
+                        back_populates="records")
+    event = relationship("Event",
+                         primaryjoin='foreign(Record.event_id) == remote(Event.id)',
+                         foreign_keys=[event_id],
+                         back_populates="records",
+                         viewonly=True)

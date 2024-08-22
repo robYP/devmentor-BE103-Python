@@ -12,6 +12,13 @@ class User(Base):
     password = Column(String(255))
     language = Column(String(50), default="zh-TW")
     
-    created_events = relationship('Event', back_populates='creator')
-    event_users = relationship('EventUser', back_populates='user')
-    records = relationship('Record', back_populates='user')
+    created_events = relationship('Event', 
+                                  primaryjoin='User.id == foreign(remote(Event.creator_id))',
+                                  back_populates='creator')
+    event_users = relationship('EventUser', 
+                               back_populates='user',
+                               primaryjoin='User.id == foreign(remote(EventUser.user_id))',
+                               )
+    records = relationship('Record', 
+                           primaryjoin='User.id == foreign(remote(Record.user_id))',
+                           back_populates='user')
