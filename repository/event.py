@@ -27,17 +27,8 @@ class EventRepository:
                          route= event.route,
                          creator_id = user.id)
         self.db.add(db_event)
-        self.db.flush()
-        # Create EventUser and Added current user as subscriber to the EventUser
-        db_event_user = EventUser(event_id=db_event.id, user_id=user.id)
-        self.db.add(db_event_user)
-        try:
-            self.db.commit()
-            self.db.refresh(db_event)
-        except Exception as e:
-            self.db.rollback()
-            raise e
-
+        self.db.commit()
+        self.db.refresh(db_event)
         return db_event
 
 
