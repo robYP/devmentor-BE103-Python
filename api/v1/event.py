@@ -7,6 +7,7 @@ from schema.database.event import EventCreate
 from services.auth import get_current_user
 
 from services.event_service import EventService
+from services.event_user_service import EventUserService
 
 router = APIRouter(
     tags=["events"],
@@ -16,6 +17,10 @@ router = APIRouter(
 
 def get_event_service(db: Session = Depends(get_db)) -> EventService:
     return EventService(db=db)
+
+
+def get_event_user_service(db: Session = Depends(get_db)) -> EventUserService:
+    return EventUserService(db=db)
 
 
 @router.get("/")
@@ -42,3 +47,9 @@ def update_event_by_id(user: Annotated[dict, Depends(get_current_user)],event_id
     if event == None:
         raise HTTPException(status_code=404, detail="Event Not Found")
     return event
+
+
+@router.get("/{event_id}/subscribers")
+def get_subscribers(user: Annotated[dict, Depends(get_current_user)], event_id:int, service:EventUserService=Depends(get_event_user_service)):
+    return service.get_subscribers(event_id=event_id)
+    
