@@ -53,3 +53,11 @@ def update_event_by_id(user: Annotated[dict, Depends(get_current_user)],event_id
 def get_subscribers(user: Annotated[dict, Depends(get_current_user)], event_id:int, service:EventUserService=Depends(get_event_user_service)):
     return service.get_subscribers(event_id=event_id)
     
+
+@router.post("/{event_id}/subscribe")
+def subscribe(event_id: int,
+              user: Annotated[dict, Depends(get_current_user)],
+              service:EventUserService=Depends(get_event_user_service)):
+    return service.subscribe(event_id=event_id, user_id=user.id)
+
+

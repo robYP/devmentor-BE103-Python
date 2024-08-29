@@ -16,8 +16,28 @@ class EventUserRepository:
         
     
     def subscribe(self, event_id:int, user_id:int):
-        return
+        event = self.db.query(Event).filter(Event.id == event_id).first()
+        if not event:
+            return None 
+        
+        db_event_user = EventUser(event_id=event_id, user_id=user_id)
+        
+        isSubscribed = self.is_subscribed(event_id=event_id, user_id=user_id)
+        if isSubscribed:
+            return db_event_user
+        
+        self.db.add(db_event_user)
+        self.db.commit()
+        self.db.refresh(db_event_user)
+        return db_event_user
     
     
     def unsubscribe(self, event_id:int, user_id:int):
         return
+    
+    
+    def is_subscribed(self, event_id: int, user_id: int):
+        return self.db.query(EventUser).filter(
+            EventUser.event_id == event_id,
+            EventUser.user_id == user_id
+        ).first() is not None
