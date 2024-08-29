@@ -13,13 +13,13 @@ class EventUserService:
         
         
     def subscribe(self, event_id:int, user_id:int):
-        self.event_user_repository.subscribe(event_id=event_id, user_id=user_id)
-        return
+        subscription = self.event_user_repository.subscribe(event_id=event_id, user_id=user_id)
+        return subscription
     
     
     def unsubscribe(self, event_id:int, user_id:int):
-        self.event_user_repository.unsubscribe(event_id=event_id, user_id=user_id)
-        return
+        unsubscribed = self.event_user_repository.unsubscribe(event_id=event_id, user_id=user_id)
+        return unsubscribed
     
     
     

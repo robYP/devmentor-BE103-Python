@@ -58,6 +58,18 @@ def get_subscribers(user: Annotated[dict, Depends(get_current_user)], event_id:i
 def subscribe(event_id: int,
               user: Annotated[dict, Depends(get_current_user)],
               service:EventUserService=Depends(get_event_user_service)):
-    return service.subscribe(event_id=event_id, user_id=user.id)
+    subscription = service.subscribe(event_id=event_id, user_id=user.id)
+    if not subscription:
+        raise HTTPException(status_code=400, detail="Already subscribed or event not found")
+    return subscription
 
+
+@router.delete("/{event_id}/unsubscribe")
+def unsubscribe(event_id:int,
+                user: Annotated[dict, Depends(get_current_user)],
+                service:EventUserService=Depends(get_event_user_service)):
+    unsubscribed = service.unsubscribe(event_id=event_id, user_id=user.id)
+    if not unsubscribed:
+        raise HTTPException(status_code=400, detail="Not subscribed or event not found")
+    return unsubscribed
 
