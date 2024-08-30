@@ -2,14 +2,15 @@ from sqlalchemy.orm import Session
 
 from database.event import Event
 from database.user import User
+from database.event_user import EventUser
 from schema.database.event import EventCreate
 
 
 class EventRepository:
     def __init__(self, db:Session):
         self.db = db
-        
-        
+
+
     def search_event_by_id(self, event_id:int):
         db_event = self.db.query(Event).filter(Event.id == event_id).first()
         if not db_event:
@@ -22,9 +23,9 @@ class EventRepository:
 
 
     def create_event(self, user: User, event: EventCreate):
-        db_event = Event(name = event.name, 
-                        route= event.route,  
-                        creator_id = user.id)
+        db_event = Event(name = event.name,
+                         route= event.route,
+                         creator_id = user.id)
         self.db.add(db_event)
         self.db.commit()
         self.db.refresh(db_event)
@@ -44,7 +45,7 @@ class EventRepository:
         db_event = self.search_event_by_id(event_id=event_id)
         if db_event == None:
             return None
-        db_event.name = event.name 
+        db_event.name = event.name
         db_event.route= event.route
         self.db.commit()
         self.db.refresh(db_event)
