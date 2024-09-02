@@ -14,7 +14,29 @@ class ContentService:
     
     
     def create_content(self, user: dict, content: ContentCreate):
-        if self.event_repository.search_event_by_id(content.event_id):
-            new_content = self.content_repository.create_content(content=content)
-            return new_content
+        event_exists = self.event_repository.search_event_by_id(content.event_id)
+        content_exists = self.content_repository.get_content(event_id=content.event_id, language=content.language)
+    
+        if event_exists and not content_exists:
+            return self.content_repository.create_content(content=content)
+        
+        return None
+    
+    
+    def update_content(self, user:dict, content: ContentCreate):
+        event_exists = self.event_repository.search_event_by_id(content.event_id)
+        content_exists = self.content_repository.get_content(event_id=content.event_id, language=content.language)
+        
+        if event_exists and content_exists:
+            return self.content_repository.update_content(content_exisits=content_exists, updated_content=content)
+        return 
+    
+    
+    def delete_content(self, user:dict, event_id:int, language:str):
+        event_exists = self.event_repository.search_event_by_id(event_id=event_id)
+        content_exists = self.content_repository.get_content(event_id=event_id, language=language)
+        
+        if event_exists and content_exists: 
+            return self.content_repository.delete_content(content_exists)
+        
         return None

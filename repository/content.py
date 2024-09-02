@@ -15,6 +15,11 @@ class ContentRepository:
         return self.db.query(Content).filter(Content.event_id == event_id).all()
     
     
+    def get_content(self, event_id:int, language:str):
+        return self.db.query(Content).filter(Content.event_id == event_id, 
+                                             Content.language == language).first()
+    
+    
     def create_content(self, content:ContentCreate):
         db_content = Content(content=content.content,
                              event_id=content.event_id,
@@ -25,20 +30,15 @@ class ContentRepository:
         return db_content
     
     
-    # def update_content(self, content_id:int, content:Content):
-    #     db_content = self.get_content(content.id)
-    #     if db_content:
-    #         db_content.content = content.content
-    #         db_content.event_id = content.event_id
-    #         db_content.language = content.language
-    #         self.db.commit()
-    #         self.db.refresh(db_content)
-    #         return db_content
-    #     return None
+    def update_content(self, content_exisits: Content, updated_content:Content):
+        content_exisits.content = updated_content.content
+        self.db.commit()
+        self.db.refresh(content_exisits)
+        return content_exisits
     
     
-    # def delete_content(self, content:Content):
-    #     self.db.delete(content)
-    #     self.db.commit()
-    #     return
+    def delete_content(self,content:Content):
+        self.db.delete(content)
+        self.db.commit()
+        return content
 
