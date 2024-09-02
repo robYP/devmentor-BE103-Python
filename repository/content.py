@@ -1,7 +1,5 @@
 from sqlalchemy.orm import Session
 
-from database.event import Event
-from database.user import User
 from database.content import Content
 from schema.database.content import ContentCreate
 
