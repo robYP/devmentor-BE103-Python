@@ -22,7 +22,7 @@ def get_content_service(db: Session = Depends(get_db)) -> ContentService:
     return ContentService(db=db)
 
 
-@router.get("/")
+@router.get("/{event_id}")
 def list_contents_by_event(
     event_id:int, 
     user: Annotated[dict, Depends(get_current_user)],
@@ -31,7 +31,7 @@ def list_contents_by_event(
     return service.list_contents_by_event(event_id=event_id)
 
 
-@router.post("/")
+@router.post("/{event_id}")
 def create_content(
     content: ContentCreate,
     user: Annotated[dict, Depends(get_current_user)],
@@ -43,7 +43,7 @@ def create_content(
     return created_event
 
 
-@router.put("/")
+@router.put("/{event_id}/{language}")
 def update_content(
     content: ContentCreate,
     user: Annotated[dict, Depends(get_current_user)],
@@ -55,7 +55,7 @@ def update_content(
     return updated_content
 
 
-@router.delete("/")
+@router.delete("/{event_id}/{language}")
 def delete_content(
     event_id: int,
     language: str,

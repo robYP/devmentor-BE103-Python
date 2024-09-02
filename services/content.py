@@ -29,7 +29,7 @@ class ContentService:
         
         if event_exists and content_exists:
             return self.content_repository.update_content(content_exisits=content_exists, updated_content=content)
-        return 
+        return None
     
     
     def delete_content(self, user:dict, event_id:int, language:str):
@@ -38,5 +38,4 @@ class ContentService:
         
         if event_exists and content_exists: 
             return self.content_repository.delete_content(content_exists)
-        
         return None
