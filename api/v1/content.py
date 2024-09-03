@@ -3,14 +3,11 @@ from sqlalchemy.orm import Session
 from typing import Annotated
 
 from infrastructure.mysql import get_db
-from schema.database.event import EventCreate
-from services.auth import get_current_user
-
-from services.event_service import EventService
-from services.event_user_service import EventUserService
 
 from services.content import ContentService
-from schema.database.content import ContentCreate, Content
+from services.auth import get_current_user
+from schema.database.content import ContentCreate
+
 
 router = APIRouter(
     tags=["contents"],

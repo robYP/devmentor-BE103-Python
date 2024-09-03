@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-
 from database.record import Record
+
 
 class RecordRepository():
     def __init__(self, db: Session):
