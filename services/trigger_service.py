@@ -3,7 +3,7 @@ from repository.event import EventRepository
 from repository.event_user import EventUserRepository
 from repository.content import ContentRepository
 from repository.user import UserRepository
-from typing import Optional
+from typing import Optional, List, Dict
 
 
 class TriggerService:
@@ -22,7 +22,7 @@ class TriggerService:
         return None
     
     
-    def get_event_subscribers(self, event_id: int):
+    def get_event_subscribers(self, event_id: int) -> Optional[List]:
         subscribers = self.event_user_repository.list_subscribers(event_id)
         if subscribers:
             users = []
@@ -43,3 +43,24 @@ class TriggerService:
 
         content = self.content_repository.get_content(event_id=event_id, language=user.language)
         return content.content if content else None
+    
+    
+    def get_event_notification_data(self, event_id: int ) -> Optional[Dict]:
+        route = self.get_event_route(event_id)
+        if not route:
+            return None
+        
+        subscribers = self.get_event_subscribers(event_id)
+        notification_data = {
+            "route": route,
+            "subscribers": []
+        }
+        
+        for subscriber in subscribers:
+            content = self.get_event_content(event_id=event_id, user_id=subscriber)
+            notification_data["subscribers"].append({
+                "user_id": subscriber,
+                "content": content
+            })
+        
+        return notification_data

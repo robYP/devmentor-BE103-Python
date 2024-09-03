@@ -47,3 +47,13 @@ def get_event_content(event_id: int,
     if not content:
         raise HTTPException(status_code=404, detail="event or user not found or user not subscribed!")
     return content
+
+
+@router.get("/{event_id}/notification_data")
+def get_event_notification_data(event_id: int,
+                                user: Annotated[dict, Depends(get_current_user)],
+                                service: TriggerService = Depends(get_trigger_service)):
+    notification_data = service.get_event_notification_data(event_id)
+    if not notification_data:
+        raise HTTPException(status_code=404, detail="Error retriveing notification data")
+    return notification_data
