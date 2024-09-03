@@ -25,3 +25,14 @@ def get_event_route(event_id: int,
     if not route:
         raise HTTPException(status_code=404, detail="event or route not found")
     return route
+
+
+@router.get("/{event_id}/subscribers")
+def get_event_subscribers(event_id: int,
+                          user: Annotated[dict, Depends(get_current_user)],
+                          service: TriggerService = Depends(get_trigger_service)):
+    subscribers = service.get_event_subscribers(event_id)
+    if not subscribers:
+        raise HTTPException(status_code=404, detail="event or subscribers not found")
+    return subscribers
+    
