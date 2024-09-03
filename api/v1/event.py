@@ -4,11 +4,10 @@ from typing import Annotated
 
 from infrastructure.mysql import get_db
 from schema.database.event import EventCreate
-# from services.auth import get_current_user
 
 from services.event_service import EventService
 from services.event_user_service import EventUserService
-from services.auth import AuthService, get_current_user
+from services.auth import get_current_user
 
 router = APIRouter(
     tags=["events"],

@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-import repository.event, repository.record
 from schema.database.event import EventCreate
 
 from repository.event import EventRepository

@@ -5,13 +5,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from infrastructure.mysql import get_db
 
-import repository.user
 from services.user import UserService
 from database.user import User
 from schema.database.user import UserCreate
 from schema.database.token import Token
 import jwt
-# from services.auth import pwd_context, authenticate_user, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from services.auth import AuthService, ACCESS_TOKEN_EXPIRE_MINUTES, get_current_user
 
 
