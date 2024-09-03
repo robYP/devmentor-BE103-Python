@@ -25,3 +25,6 @@ class Event(Base):
                            primaryjoin='Event.id == foreign(remote(Record.event_id))',
                            back_populates='event',
                            viewonly=True)
+    contents = relationship('Content',
+                            primaryjoin='Event.id == foreign(remote(Content.event_id))',
+                            back_populates='event')
