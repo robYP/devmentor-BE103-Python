@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class UserBase(BaseModel):
     username: str
     password: str
-    language: str | None = "en-US"
+    language: str | None = "EN"
 
 
 class UserCreate(UserBase):
