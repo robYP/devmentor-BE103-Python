@@ -10,7 +10,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(255), unique=True)
     password = Column(String(255))
-    language = Column(String(50), default="zh-TW")
+    language = Column(String(50), default="ZH")
     
     created_events = relationship('Event', 
                                   primaryjoin='User.id == foreign(remote(Event.creator_id))',
