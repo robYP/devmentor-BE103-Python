@@ -70,6 +70,34 @@ class TriggerService:
         return notification_data
     
     
+    def prepare_email_data(self, event_id: int) -> List[Dict]:
+        event = self.event_repository.search_event_by_id(event_id)
+        if not event:
+            return None
+        
+        notification_data = self.get_event_notification_data(event_id)
+        if not notification_data:
+            return None
+        
+        subscribed_user_ids = [subscriber["user_id"] for subscriber in notification_data["subscribers"]]
+        users = self.user_repository.get_users_by_user_ids(subscribed_user_ids)
+        user_map = {}
+        for user in users:
+            user_map[user.id] = user
+        
+        email_data = []
+        
+        for subscriber in notification_data["subscribers"]:
+            user = user_map.get(subscriber["user_id"])
+            email_data.append({
+                "To": user.username,
+                "Subject": f"Notification for Event {event.name}",
+                "body": subscriber["content"]
+            })
+        
+        return email_data
+    
+    
     def send_email_notification(self, event_id: int):
         event = self.event_repository.search_event_by_id(event_id)
         if not event:

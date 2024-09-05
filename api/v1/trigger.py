@@ -59,6 +59,16 @@ def get_event_notification_data(event_id: int,
     return notification_data
 
 
+@router.get("/{event_id}/email_data_prep")
+def prepare_email_data(event_id: int, 
+                       user: Annotated[dict, Depends(get_current_user)],
+                       service: TriggerService = Depends(get_trigger_service)):
+    email_data = service.prepare_email_data(event_id)
+    if not email_data:
+        raise HTTPException(status_code=401, detail="Error getting email data")
+    return email_data
+
+
 @router.get("/{event_id}/send_notification")
 def process_event(event_id: int,
                   user: Annotated[dict, Depends(get_current_user)],
