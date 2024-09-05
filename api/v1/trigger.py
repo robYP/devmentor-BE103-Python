@@ -23,7 +23,7 @@ def get_event_route(event_id: int,
                     service: TriggerService = Depends(get_trigger_service)):
     route = service.get_event_route(event_id)
     if not route:
-        raise HTTPException(status_code=404, detail="event or route not found")
+        raise HTTPException(status_code=401, detail=f"Event {event_id} not found or has no route")
     return route
 
 
@@ -33,7 +33,7 @@ def get_event_subscribers(event_id: int,
                           service: TriggerService = Depends(get_trigger_service)):
     subscribers = service.get_event_subscribers(event_id)
     if not subscribers:
-        raise HTTPException(status_code=404, detail="event or subscribers not found")
+        raise HTTPException(status_code=401, detail=f"No subscribers found for event {event_id}")
     return subscribers
 
 
@@ -45,7 +45,7 @@ def get_event_content(event_id: int,
     
     content = service.get_event_content(event_id=event_id, user_id=user_id)
     if not content:
-        raise HTTPException(status_code=404, detail="event or user not found or user not subscribed!")
+        raise HTTPException(status_code=401, detail=f"Content not found for event {event_id} and user {user_id}")
     return content
 
 
@@ -55,7 +55,7 @@ def get_event_notification_data(event_id: int,
                                 service: TriggerService = Depends(get_trigger_service)):
     notification_data = service.get_event_notification_data(event_id)
     if not notification_data:
-        raise HTTPException(status_code=404, detail="Error retriveing notification data")
+        raise HTTPException(status_code=404, detail=f"Notification data not found for event {event_id}")
     return notification_data
 
 
@@ -75,5 +75,5 @@ def process_event(event_id: int,
                   service: TriggerService = Depends(get_trigger_service)):
     result = service.process_event(event_id)
     if not result:
-        raise HTTPException(status_code=404, detail="Error sending notification")
+        raise HTTPException(status_code=404, detail="Error sending notification for event {event_id}")
     return result
