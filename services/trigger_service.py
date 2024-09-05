@@ -44,6 +44,8 @@ class TriggerService:
             return None
 
         content = self.content_repository.get_content(event_id=event_id, language=user.language)
+        if not content:
+            content = self.content_repository.get_content(event_id=event_id , language="EN")
         return content.content if content else None
     
     
