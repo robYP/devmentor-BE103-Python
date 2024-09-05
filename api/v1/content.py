@@ -29,7 +29,7 @@ def list_contents_by_event(
     return service.list_contents_by_event(event_id=event_id)
 
 
-@router.post("/{event_id}")
+@router.post("/{event_id}/{language}")
 def create_content(
     content: ContentCreate,
     event_id: int,
