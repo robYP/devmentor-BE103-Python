@@ -46,10 +46,12 @@ def create_content(
 @router.put("/{event_id}/{language}")
 def update_content(
     content: ContentCreate,
+    event_id: int,
+    language: Language,
     user: Annotated[dict, Depends(get_current_user)],
     service: ContentService = Depends(get_content_service)
 ):
-    updated_content = service.update_content(content=content, user=user)
+    updated_content = service.update_content(content=content, user=user, event_id=event_id, language=language)
     if not updated_content:
         raise HTTPException(status_code=400, detail="Event_id or Content not found")
     return updated_content
@@ -58,7 +60,7 @@ def update_content(
 @router.delete("/{event_id}/{language}")
 def delete_content(
     event_id: int,
-    language: str,
+    language: Language,
     user: Annotated[dict, Depends(get_current_user)],
     service: ContentService = Depends(get_content_service)
 ):

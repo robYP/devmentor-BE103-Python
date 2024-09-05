@@ -30,9 +30,9 @@ class ContentService:
         return None
     
     
-    def update_content(self, user:dict, content: ContentCreate):
-        event_exists = self.event_repository.search_event_by_id(content.event_id)
-        content_exists = self.content_repository.get_content(event_id=content.event_id, language=content.language)
+    def update_content(self, user:dict, content: ContentCreate, event_id: int, language: Language):
+        event_exists = self.event_repository.search_event_by_id(event_id)
+        content_exists = self.content_repository.get_content(event_id=event_id, language=language)
         
         if event_exists and content_exists:
             updated_content = self.content_repository.update_content(content_exisits=content_exists, updated_content=content)
