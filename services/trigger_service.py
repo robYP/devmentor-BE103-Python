@@ -111,25 +111,26 @@ class TriggerService:
         if not notification_data:
             return None
         
+        email_data_list = self.prepare_email_data(event_id)
+        
         with smtplib.SMTP(GMAIL_SMTP_SERVER) as connection:
             connection.starttls()
             connection.login(user=GMAIL_SMTP_USERNAME, password=GMAIL_SMTP_PASSWORD)
             
-            for subscriber in notification_data["subscribers"]:
-                user = self.user_repository.get_user_by_user_id(subscriber["user_id"])
-                if not user:
+            for email_data in email_data_list:
+                if not email_data:
                     continue
                 
                 msg = MIMEMultipart()
                 msg["From"] = GMAIL_SMTP_USERNAME
-                msg["To"] = user.username
-                msg["Subject"] = f"Notification for Event {event.name}, {event_id}"
+                msg["To"] = email_data["To"]
+                msg["Subject"] = email_data["Subject"]
                 
-                body = subscriber["content"]
+                body = email_data["body"]
                 msg.attach(MIMEText(body, "plain"))
                 
                 connection.send_message(msg)
-                print(f"Email sent to {user.username}")
+                print(f"Email sent to {email_data['To']}")
             
         return
     
