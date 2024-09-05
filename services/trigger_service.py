@@ -43,10 +43,13 @@ class TriggerService:
         if not subscription:
             return None
 
-        content = self.content_repository.get_content(event_id=event_id, language=user.language)
-        if not content:
-            content = self.content_repository.get_content(event_id=event_id , language="EN")
-        return content.content if content else None
+        contents = self.content_repository.get_contents_by_event(event_id=event_id)
+        for c in contents:
+            if c.language == user.language:
+                return c.content
+            if c.language == "EN":
+                default_content = c
+        return default_content.content
     
     
     def get_event_notification_data(self, event_id: int ) -> Optional[Dict]:
