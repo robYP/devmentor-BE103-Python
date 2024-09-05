@@ -99,16 +99,8 @@ class TriggerService:
     
     
     def send_email_notification(self, event_id: int):
-        event = self.event_repository.search_event_by_id(event_id)
-        if not event:
-            return None
-        
         route = self.get_event_route(event_id)
         if route != "EMAIL":
-            return None
-        
-        notification_data = self.get_event_notification_data(event_id)
-        if not notification_data:
             return None
         
         email_data_list = self.prepare_email_data(event_id)
