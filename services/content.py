@@ -3,6 +3,7 @@ from repository.event import EventRepository
 from repository.content import ContentRepository
 from repository.record import RecordRepository
 from schema.database.content import ContentCreate
+from schema.database.language import Language
 
 class ContentService:
     def __init__(self, db:Session):
@@ -15,14 +16,14 @@ class ContentService:
         return self.content_repository.get_contents_by_event(event_id)
     
     
-    def create_content(self, user: dict, content: ContentCreate):
-        event_exists = self.event_repository.search_event_by_id(content.event_id)
-        content_exists = self.content_repository.get_content(event_id=content.event_id, language=content.language)
+    def create_content(self, user: dict, content: ContentCreate, event_id: int, language: Language):
+        event_exists = self.event_repository.search_event_by_id(event_id)
+        content_exists = self.content_repository.get_content(event_id=event_id, language=language)
     
         if event_exists and not content_exists:
-            new_content = self.content_repository.create_content(content=content)
+            new_content = self.content_repository.create_content(content=content, event_id=event_id, language=language)
             self.record_repository.create_record(user_id = user.id,
-                                       event_id = content.event_id,
+                                       event_id = event_id,
                                        action = "Create Content")
             return new_content
         

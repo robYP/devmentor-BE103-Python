@@ -1,10 +1,9 @@
 from pydantic import BaseModel
+from schema.database.language import Language
 
 
 class ContentBase(BaseModel):
     content: str
-    event_id: int
-    language: str
 
 
 class ContentCreate(ContentBase):
@@ -13,6 +12,8 @@ class ContentCreate(ContentBase):
 
 class Content(ContentBase):
     id: int
+    event_id: int
+    language: Language
         
     class Config:
         orm_mode = True
