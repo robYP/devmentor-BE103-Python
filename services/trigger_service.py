@@ -4,10 +4,7 @@ from repository.event_user import EventUserRepository
 from repository.content import ContentRepository
 from repository.user import UserRepository
 from typing import Optional, List, Dict
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from config.config import GMAIL_SMTP_SERVER, GMAIL_TLS_PORT, GMAIL_SMTP_USERNAME, GMAIL_SMTP_PASSWORD
+from services.email_service import EmailService 
 
 
 class TriggerService:
@@ -17,6 +14,7 @@ class TriggerService:
         self.event_user_repository = EventUserRepository(db)
         self.content_repository = ContentRepository(db)
         self.user_repository = UserRepository(db)
+        self.email_service = EmailService()
 
 
     def get_event_route(self, event_id: int):
@@ -103,28 +101,9 @@ class TriggerService:
         if route != "EMAIL":
             return None
         
-        email_data_list = self.prepare_email_data(event_id)
+        email_data = self.prepare_email_data(event_id)
         
-        with smtplib.SMTP(GMAIL_SMTP_SERVER) as connection:
-            connection.starttls()
-            connection.login(user=GMAIL_SMTP_USERNAME, password=GMAIL_SMTP_PASSWORD)
-            
-            for email_data in email_data_list:
-                if not email_data:
-                    continue
-                
-                msg = MIMEMultipart()
-                msg["From"] = GMAIL_SMTP_USERNAME
-                msg["To"] = email_data["To"]
-                msg["Subject"] = email_data["Subject"]
-                
-                body = email_data["body"]
-                msg.attach(MIMEText(body, "plain"))
-                
-                connection.send_message(msg)
-                print(f"Email sent to {email_data['To']}")
-            
-        return
+        return self.email_service.send_emails(email_data_list=email_data)
     
     
     def process_event(self, event_id: int):
@@ -133,7 +112,7 @@ class TriggerService:
             return None
         
         if route == "EMAIL":
-            self.send_email_notification(event_id)
-            return "email sent"
+            success = self.send_email_notification(event_id)
+            return "Emails sent" if success else "Failed sending emails"
         
         return None
