@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from database.content import Content
 from schema.database.content import ContentCreate
+from schema.database.language import Language
 
 
 class ContentRepository:
@@ -18,10 +19,10 @@ class ContentRepository:
                                              Content.language == language).first()
     
     
-    def create_content(self, content:ContentCreate):
+    def create_content(self, content:ContentCreate, event_id:int, language: Language):
         db_content = Content(content=content.content,
-                             event_id=content.event_id,
-                             language=content.language)
+                             event_id=event_id,
+                             language=language)
         self.db.add(db_content)
         self.db.commit()
         self.db.refresh(db_content)

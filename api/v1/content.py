@@ -6,7 +6,8 @@ from infrastructure.mysql import get_db
 
 from services.content import ContentService
 from services.auth import get_current_user
-from schema.database.content import ContentCreate
+from schema.database.content import ContentCreate 
+from schema.database.language import Language
 
 
 router = APIRouter(
@@ -28,13 +29,15 @@ def list_contents_by_event(
     return service.list_contents_by_event(event_id=event_id)
 
 
-@router.post("/{event_id}")
+@router.post("/{event_id}/{language}")
 def create_content(
     content: ContentCreate,
+    event_id: int,
+    language: Language,
     user: Annotated[dict, Depends(get_current_user)],
     service: ContentService = Depends(get_content_service)
 ):
-    created_event = service.create_content(user=user, content=content)
+    created_event = service.create_content(user=user, content=content, event_id=event_id, language=language)
     if not created_event:
         raise HTTPException(status_code=400, detail="Event ID not found or content already exisits")
     return created_event
@@ -43,10 +46,12 @@ def create_content(
 @router.put("/{event_id}/{language}")
 def update_content(
     content: ContentCreate,
+    event_id: int,
+    language: Language,
     user: Annotated[dict, Depends(get_current_user)],
     service: ContentService = Depends(get_content_service)
 ):
-    updated_content = service.update_content(content=content, user=user)
+    updated_content = service.update_content(content=content, user=user, event_id=event_id, language=language)
     if not updated_content:
         raise HTTPException(status_code=400, detail="Event_id or Content not found")
     return updated_content
@@ -55,7 +60,7 @@ def update_content(
 @router.delete("/{event_id}/{language}")
 def delete_content(
     event_id: int,
-    language: str,
+    language: Language,
     user: Annotated[dict, Depends(get_current_user)],
     service: ContentService = Depends(get_content_service)
 ):
