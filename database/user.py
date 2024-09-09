@@ -8,9 +8,10 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String(255), unique=True)
-    password = Column(String(255))
+    username = Column(String(255), unique=True, nullable=True)
+    password = Column(String(255), nullable=True)
     language = Column(String(50), default="ZH")
+    line_user_id = Column(String(255), unique=True, nullable=True)
     
     created_events = relationship('Event', 
                                   primaryjoin='User.id == foreign(remote(Event.creator_id))',
