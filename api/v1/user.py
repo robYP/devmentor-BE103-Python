@@ -11,6 +11,7 @@ from schema.database.user import UserCreate
 from schema.database.token import Token
 import jwt
 from services.auth import AuthService, ACCESS_TOKEN_EXPIRE_MINUTES, get_current_user
+from config.config import LINE_CHANNEL_ID, LINE_CALLBACK_URL
 
 
 router = APIRouter(
@@ -68,3 +69,9 @@ async def read_current_user(user: Annotated[dict, Depends(get_current_user)]):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
     return {"User": user}
+
+
+@router.get("/line-login")
+async def line_login():
+    line_login_url = f"https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id={LINE_CHANNEL_ID}&redirect_uri={LINE_CALLBACK_URL}&state=12345abcde&scope=profile%20openid"
+    return {"LINE login URL": line_login_url}
