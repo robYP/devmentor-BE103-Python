@@ -11,6 +11,10 @@ from schema.database.user import UserCreate
 from schema.database.token import Token
 import jwt
 from services.auth import AuthService, ACCESS_TOKEN_EXPIRE_MINUTES, get_current_user
+from services.line_login_service import LineLoginService
+from config.config import LINE_CHANNEL_ID, LINE_CALLBACK_URL, LINE_CHANNEL_SECRET
+import requests
+from requests.exceptions import RequestException
 
 
 router = APIRouter(
@@ -25,6 +29,10 @@ def get_user_service(db: Session = Depends(get_db)) -> UserService:
 
 def get_auth_service(db: Session = Depends(get_db)) -> AuthService:
     return AuthService(db=db)
+
+
+def get_line_login_service(db: Session = Depends(get_db)) -> LineLoginService:
+    return LineLoginService(db=db)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -68,3 +76,32 @@ async def read_current_user(user: Annotated[dict, Depends(get_current_user)]):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
     return {"User": user}
+
+
+@router.get("/line-login")
+async def line_login(service: LineLoginService = Depends(get_line_login_service)):
+    line_login_url = f"https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id={LINE_CHANNEL_ID}&redirect_uri={LINE_CALLBACK_URL}&state=12345abcde&scope=profile%20openid"
+    return {"LINE login URL": line_login_url}
+
+
+@router.get("/callback")
+async def line_callback(code: str, state: str, service: LineLoginService = Depends(get_line_login_service)):
+    # Exchange code for access token
+    token_response = service.get_line_access_token(code)
+    if not token_response:
+        raise HTTPException(status_code=400, detail="Failed to get LINE access token")
+    print(f"token_response:{token_response}")
+   
+    token_info = service.verify_token(token_response["access_token"])
+    if not token_info:
+        raise HTTPException(status_code=400, detail="Failed to get LINE access token")
+    print(f"token_info:{token_info}")
+    
+    user_profile = service.get_line_user_profile(token_response["access_token"])
+    if not user_profile:
+        raise HTTPException(status_code=400, detail="Failed to get LINE user profile")
+    print(f"user_profile:{user_profile}")
+
+    return user_profile
+
+    
