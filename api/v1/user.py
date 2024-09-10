@@ -96,17 +96,33 @@ def get_line_access_token(code):
         return response.json()
     else:
         raise Exception("Failed to get access token")
-
+    
+    
+def verify_token(access_token):
+        verify_token_url = "https://api.line.me/oauth2/v2.1/verify"
+        param = {
+            "access_token":access_token,
+        }
+        response = requests.get(verify_token_url, params=param)
+        if response.status_code == 200:
+            return response.json()
+        return None
+    
 
 @router.get("/callback")
 async def line_callback(code: str, state: str):
     # Exchange code for access token
     print("#######################")
-    print(code)
-    print(state)
+    print(f"code:{code}")
+    print(f"state:{state}")
     token_response = get_line_access_token(code)
     if not token_response:
         raise HTTPException(status_code=400, detail="Failed to get LINE access token")
-    print(token_response)
-    return token_response
+    print(f"token_response:{token_response}")
+   
+    token_info = verify_token(token_response["access_token"])
+    if not token_info:
+        raise HTTPException(status_code=400, detail="Failed to get LINE access token")
+    print(f"token_info:{token_info}")
     
+    return token_info
