@@ -11,7 +11,9 @@ from schema.database.user import UserCreate
 from schema.database.token import Token
 import jwt
 from services.auth import AuthService, ACCESS_TOKEN_EXPIRE_MINUTES, get_current_user
-from config.config import LINE_CHANNEL_ID, LINE_CALLBACK_URL
+from config.config import LINE_CHANNEL_ID, LINE_CALLBACK_URL, LINE_CHANNEL_SECRET
+import requests
+from requests.exceptions import RequestException
 
 
 router = APIRouter(
@@ -75,3 +77,36 @@ async def read_current_user(user: Annotated[dict, Depends(get_current_user)]):
 async def line_login():
     line_login_url = f"https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id={LINE_CHANNEL_ID}&redirect_uri={LINE_CALLBACK_URL}&state=12345abcde&scope=profile%20openid"
     return {"LINE login URL": line_login_url}
+
+
+def get_line_access_token(code):
+    token_url = "https://api.line.me/oauth2/v2.1/token"
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    data = {
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": LINE_CALLBACK_URL,
+        "client_id": LINE_CHANNEL_ID,
+        "client_secret": LINE_CHANNEL_SECRET
+    }
+    response = requests.post(token_url, headers=headers, data=data)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception("Failed to get access token")
+
+
+@router.get("/callback")
+async def line_callback(code: str, state: str):
+    # Exchange code for access token
+    print("#######################")
+    print(code)
+    print(state)
+    token_response = get_line_access_token(code)
+    if not token_response:
+        raise HTTPException(status_code=400, detail="Failed to get LINE access token")
+    print(token_response)
+    return token_response
+    
