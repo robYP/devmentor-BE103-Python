@@ -101,7 +101,9 @@ async def line_callback(code: str, state: str, service: LineLoginService = Depen
     if not user_profile:
         raise HTTPException(status_code=400, detail="Failed to get LINE user profile")
     print(f"user_profile:{user_profile}")
+    
+    new_user = service.create_user_by_line_id(user_profile)
 
-    return user_profile
+    return new_user
 
     
