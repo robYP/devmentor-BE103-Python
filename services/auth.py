@@ -60,12 +60,18 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db:Ses
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         identifier: str = payload.get("sub")
         user_id: int = payload.get("id")
-        if identifier is None or user_id is None:
+        login_type: str = payload.get("login_type")
+        if identifier is None or user_id is None or login_type is None:
             raise credentials_exception
         token_data = TokenData(username=identifier)
     except InvalidTokenError:
         raise credentials_exception
-    user = UserRepository(db).get_user_by_username(username=token_data.username) or UserRepository(db).get_user_by_line_id(line_id=identifier)
+    
+    if login_type == "LINE":
+        user = UserRepository(db).get_user_by_line_id(line_id=identifier)
+    else:
+        user = UserRepository(db).get_user_by_username(username=token_data.username)
+        
     if user is None:
         raise credentials_exception
     return user

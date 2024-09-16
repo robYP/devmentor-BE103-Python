@@ -109,7 +109,9 @@ async def line_callback(code: str,
     
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = auth_service.create_access_token(
-        data={"sub": new_user.line_user_id,"id": new_user.id}, 
+        data={"sub": new_user.line_user_id,
+              "id": new_user.id,
+              "login_type": "LINE"}, 
         expires_delta=access_token_expires
     )
 
