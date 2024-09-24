@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from api.index import init_api_list
 from infrastructure.mysql import engine, Base
+from fastapi.middleware.cors import CORSMiddleware
 
 
 class ServerCreator:
@@ -23,3 +24,11 @@ class ServerCreator:
 server_creator = ServerCreator()
 server_creator.database_init()
 app = server_creator.get_app()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
