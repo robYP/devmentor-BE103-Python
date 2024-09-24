@@ -61,7 +61,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db:Ses
         identifier: str = payload.get("sub")
         user_id: int = payload.get("id")
         login_type: str = payload.get("login_type")
-        if identifier is None or user_id is None:
+        if user_id is None and (identifier is None or login_type is None):
             raise credentials_exception
         token_data = TokenData(username=identifier)
     except InvalidTokenError:
