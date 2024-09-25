@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+from repository.user import UserRepository
+from database.user import User
 from config.config import LINE_CHANNEL_ID, LINE_CALLBACK_URL, LINE_CHANNEL_SECRET
 import requests
 from requests.exceptions import RequestException
@@ -6,6 +8,7 @@ from requests.exceptions import RequestException
 
 class LineLoginService:
     def __init__(self, db:Session) -> None:
+        self.user_repository = UserRepository(db)
         pass
     
     def get_line_access_token(self, code):
@@ -47,3 +50,15 @@ class LineLoginService:
         if response.status_code == 200:
             return response.json()
         return None
+
+    def create_user_by_line_id(self, line_user):
+        user = self.user_repository.get_user_by_line_id(line_user["userId"])
+        
+        if user:
+            return user
+        if not user:
+            user = User(
+                line_user_id = line_user["userId"],
+                language = "EN"
+            )
+            return self.user_repository.create(user)            

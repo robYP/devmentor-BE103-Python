@@ -25,3 +25,7 @@ class UserRepository:
     
     def get_users_by_user_ids(self, user_ids: list[int]):
         return self.db.query(User).filter(User.id.in_(user_ids)).all()
+    
+    
+    def get_user_by_line_id(self, line_id: str):
+        return self.db.query(User).filter(User.line_user_id == line_id).first()

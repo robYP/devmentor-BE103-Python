@@ -85,7 +85,10 @@ async def line_login(service: LineLoginService = Depends(get_line_login_service)
 
 
 @router.get("/callback")
-async def line_callback(code: str, state: str, service: LineLoginService = Depends(get_line_login_service)):
+async def line_callback(code: str, 
+                        state: str, 
+                        service: LineLoginService = Depends(get_line_login_service),
+                        auth_service: AuthService = Depends(get_auth_service)):
     # Exchange code for access token
     token_response = service.get_line_access_token(code)
     if not token_response:
@@ -101,7 +104,17 @@ async def line_callback(code: str, state: str, service: LineLoginService = Depen
     if not user_profile:
         raise HTTPException(status_code=400, detail="Failed to get LINE user profile")
     print(f"user_profile:{user_profile}")
+    
+    new_user = service.create_user_by_line_id(user_profile)
+    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = auth_service.create_access_token(
+        data={"sub": new_user.line_user_id,
+              "id": new_user.id,
+              "login_type": "LINE"}, 
+        expires_delta=access_token_expires
+    )
 
-    return user_profile
+    return {"user": new_user, "access_token":{access_token}, "token_type": "bearer"}
 
     
