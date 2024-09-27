@@ -5,6 +5,7 @@ from repository.content import ContentRepository
 from repository.user import UserRepository
 from typing import Optional, List, Dict
 from services.email_service import EmailService 
+import re
 
 
 class TriggerService:
@@ -16,7 +17,11 @@ class TriggerService:
         self.user_repository = UserRepository(db)
         self.email_service = EmailService()
 
-
+    def is_valid_email(self, email):
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return re.match(email_regex, email) is not None
+    
+    
     def get_event_route(self, event_id: int):
         event = self.event_repository.search_event_by_id(event_id)
         if event:
@@ -92,11 +97,14 @@ class TriggerService:
         
         for subscriber in notification_data["subscribers"]:
             user = user_map.get(subscriber["user_id"])
-            email_data.append({
-                "To": user.username,
-                "Subject": f"Notification for Event {event.name}",
-                "body": subscriber["content"]
-            })
+            if user and self.is_valid_email(user.username):
+                email_data.append({
+                    "To": user.username,
+                    "Subject": f"Notification for Event {event.name}",
+                    "body": subscriber["content"]
+                })
+            else:
+                print(f"Skipping email for user {user.id}: Invalid email address")
         
         return email_data
     
