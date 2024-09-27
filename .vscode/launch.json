@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: FastAPI with Poetry",
+        "type": "python",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": [
+          "command.server:app",
+          "--port",
+          "8000"
+        ],
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PYTHONUNBUFFERED": "1"
+        },
+        "python": "/Users/robchen/Library/Caches/pypoetry/virtualenvs/devmentor-be103-python-_2EJWqYX-py3.10/bin/python",
+        "justMyCode": true
+      }
+    ]
+  }
