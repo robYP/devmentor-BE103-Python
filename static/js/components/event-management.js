@@ -1,6 +1,6 @@
 import { createEvent, listEvents, deleteEvent, updateEvent, triggerEvent } from '../api-interactions.js';
 import { getEventById, showErrorMessage,showSuccessMessage } from '../dashboard.js'
-import { updateSubscriptionButtons } from '../components/subscription-management.js'
+import { updateSubscriptionButtons } from './subscription-management.js'
 
 async function loadEvents() {
     try {
