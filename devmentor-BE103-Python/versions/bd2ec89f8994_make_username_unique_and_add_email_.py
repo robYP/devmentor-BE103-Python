@@ -23,7 +23,7 @@ def upgrade() -> None:
     op.create_unique_constraint('uq_user_username', 'user', ['username'])
     
     # Add email column
-    op.add_column('user', sa.Column('email', sa.String(length=255), nullable=False))
+    op.add_column('user', sa.Column('email', sa.String(length=255), nullable=True))
 
 
 def downgrade() -> None:

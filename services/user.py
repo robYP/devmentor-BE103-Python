@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 from repository.user import UserRepository
 from schema.database.user import UserCreate
 
@@ -10,8 +12,17 @@ class UserService:
         
 
     def create_user(self, user: UserCreate):
-        new_user = self.user_repository.create(user=user)
-        return new_user
+        try:
+            new_user = self.user_repository.create(user=user)
+            return new_user
+        except IntegrityError as e:
+            self.db.rollback()
+            if "Duplicate entry" in str(e) and "username" in str(e):
+                raise HTTPException(status_code=400, detail="Username already exists")
+            elif "Duplicate entry" in str(e) and "email" in str(e):
+                raise HTTPException(status_code=400, detail="Email already exists")
+            else:
+                raise HTTPException(status_code=400, detail="An error occurred while creating the user")
 
 
     def get_user_by_username(self, username: str):

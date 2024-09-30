@@ -6,7 +6,7 @@ class UserBase(BaseModel):
     password: str
     language: str | None = "EN"
     line_user_id: Optional[str] = None
-    email: EmailStr
+    email: Optional[EmailStr] = None
 
 
 class UserCreate(UserBase):

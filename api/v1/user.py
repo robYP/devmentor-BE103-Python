@@ -41,6 +41,7 @@ def create_user(user: UserCreate,
                 auth_service: AuthService = Depends(get_auth_service)):
     user = User(
         username = user.username,
+        email = user.email,
         password = auth_service.pwd_context.hash(user.password),
         language = user.language
     )
