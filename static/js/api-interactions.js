@@ -18,7 +18,8 @@ async function apiRequest(endpoint, method, data = null) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
         }
         return await response.json();
     } catch (error) {
@@ -54,11 +55,11 @@ async function login(username, password) {
 
 function logout() {
     localStorage.removeItem('access_token');
-    window.location.href = 'signin.html'; // Redirect to login page
+    window.location.href = '/'; // Redirect to login page
 }
 
-async function register(username, password, language) {
-    return await apiRequest('/users/', 'POST', { username, password, language });
+async function register(username, email, password, language) {
+    return await apiRequest('/users/', 'POST', { username, email, password, language });
 }
 
 async function getCurrentUser() {
