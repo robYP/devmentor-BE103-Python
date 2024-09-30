@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database.event import Event
 from database.user import User
 from database.event_user import EventUser
+from database.content import Content
 from schema.database.event import EventCreate
 
 
@@ -33,6 +34,8 @@ class EventRepository:
 
 
     def delete_event_by_id(self, event_id:int):
+        self.db.query(Content).filter(Content.event_id == event_id).delete(synchronize_session=False)
+        
         db_event = self.search_event_by_id(event_id=event_id)
         if db_event == None:
             return None
