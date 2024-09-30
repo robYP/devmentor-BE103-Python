@@ -97,9 +97,9 @@ class TriggerService:
         
         for subscriber in notification_data["subscribers"]:
             user = user_map.get(subscriber["user_id"])
-            if user and self.is_valid_email(user.username):
+            if user and self.is_valid_email(user.email):
                 email_data.append({
-                    "To": user.username,
+                    "To": user.email,
                     "Subject": f"Notification for Event {event.name}",
                     "body": subscriber["content"]
                 })
