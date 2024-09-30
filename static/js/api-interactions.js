@@ -81,7 +81,11 @@ async function handleLineCallback(code, state) {
 
 // Event management
 async function createEvent(name, route) {
-    return await apiRequest('/events/', 'POST', { name, route });
+    const response = await apiRequest('/events/', 'POST', { name, route });
+    if (!response || !response.id) {
+        throw new Error('Failed to create event: No event ID returned');
+    }
+    return response;
 }
 
 async function listEvents(skip = 0, limit = 100) {

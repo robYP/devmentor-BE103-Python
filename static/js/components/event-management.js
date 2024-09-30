@@ -1,4 +1,4 @@
-import { createEvent, listEvents, deleteEvent, updateEvent, triggerEvent } from '../api-interactions.js';
+import { createEvent, listEvents, deleteEvent, updateEvent, triggerEvent, createContent} from '../api-interactions.js';
 import { getEventById, showErrorMessage,showSuccessMessage } from '../dashboard.js'
 import { updateSubscriptionButtons } from './subscription-management.js'
 
@@ -39,13 +39,22 @@ async function handleCreateEvent(e) {
     e.preventDefault();
     const name = document.getElementById('eventName').value;
     const route = document.getElementById('eventRoute').value;
+    const contentLanguages = document.getElementsByName('contentLanguage[]');
+    const contentTexts = document.getElementsByName('contentText[]');
+
     try {
-        await createEvent(name, route);
+        const newEvent = await createEvent(name, route)
+        console.log('New event created:', newEvent);
+
+        for (let i = 0; i < contentLanguages.length; i++) {
+            await createContent(newEvent.id, { content: contentTexts[i].value }, contentLanguages[i].value);
+        }
+        
         // Close the modal and refresh the events list
         const modal = bootstrap.Modal.getInstance(document.getElementById('createEventModal'));
         modal.hide();
-        loadEvents();
-        showSuccessMessage('Event created successfully!');
+        await loadEvents();
+        showSuccessMessage('Event created successfully with content!');
     } catch (error) {
         console.error('Error creating event:', error);
         showErrorMessage('Failed to create event. Please try again.');

@@ -116,6 +116,18 @@
                                 <!-- Add more route options as needed -->
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Content</label>
+                            <div id="contentFields">
+                                <div class="content-entry mb-3">
+                                    <select class="form-select mb-2" name="contentLanguage[]">
+                                        <option value="EN">English</option>
+                                        <option value="ZH">Chinese</option>
+                                    </select>
+                                    <textarea class="form-control" name="contentText[]" rows="3" required></textarea>
+                                </div>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary">Create Event</button>
                     </form>
                 </div>
