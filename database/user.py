@@ -12,7 +12,7 @@ class User(Base):
     password = Column(String(255), nullable=True)
     language = Column(String(50), default="ZH")
     line_user_id = Column(String(255), unique=True, nullable=True)
-    email = Column(String(255), nullable=False) 
+    email = Column(String(255), unique=True, nullable=False) 
     
     created_events = relationship('Event', 
                                   primaryjoin='User.id == foreign(remote(Event.creator_id))',
