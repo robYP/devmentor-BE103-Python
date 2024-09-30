@@ -13,6 +13,9 @@ class UserService:
 
     def create_user(self, user: UserCreate):
         try:
+            if not user.line_user_id and not user.email:
+                raise HTTPException(status_code=400, detail="Email is required for non-social login")
+            
             new_user = self.user_repository.create(user=user)
             return new_user
         except IntegrityError as e:
