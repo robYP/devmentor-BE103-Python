@@ -159,6 +159,11 @@
                                 <!-- Add more route options as needed -->
                             </select>
                         </div>
+                        <hr>
+                        <h6>Event Content</h6>
+                        <div id="editContentList"></div>
+                        <button type="button" class="btn btn-secondary mt-2" id="addEditContentField">Add New Content</button>
+                        <hr>
                         <button type="submit" class="btn btn-primary">Update Event</button>
                     </form>
                 </div>
@@ -204,7 +209,21 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <ul id="subscribersList"></ul>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>LINE ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscribersTableBody">
+                                <!-- Subscriber rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

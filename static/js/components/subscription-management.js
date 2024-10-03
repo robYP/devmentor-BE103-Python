@@ -1,21 +1,27 @@
-import { getCurrentUser, subscribeToEvent, unsubscribeFromEvent, listSubscribers, triggerEvent } from '../api-interactions.js';
+import { getCurrentUser, subscribeToEvent, unsubscribeFromEvent, listSubscribers, getUserDetails } from '../api-interactions.js';
 import { getEventById, showErrorMessage,showSuccessMessage } from '../dashboard.js'
 
 
 async function handleViewSubscribers(eventId) {
     try {
         const subscribers = await listSubscribers(eventId);
-        const subscribersList = document.getElementById('subscribersList');
-        subscribersList.innerHTML = '';
+        const subscribersTableBody = document.getElementById('subscribersTableBody');
+        subscribersTableBody.innerHTML = '';
         
         if (subscribers.length === 0) {
-            subscribersList.innerHTML = '<li>No subscribers for this event.</li>';
+            subscribersTableBody.innerHTML = '<tr><td colspan="4" class="text-center">No subscribers for this event.</td></tr>';
         } else {
-            subscribers.forEach(subscriber => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `User ID: ${subscriber.user_id}`;
-                subscribersList.appendChild(listItem);
-            });
+            for (const subscriber of subscribers) {
+                const userDetails = await getUserDetails(subscriber.user_id);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${userDetails.id}</td>
+                    <td>${userDetails.username || 'N/A'}</td>
+                    <td>${userDetails.email || 'N/A'}</td>
+                    <td>${userDetails.line_user_id || 'N/A'}</td>
+                `;
+                subscribersTableBody.appendChild(row);
+            }
         }
         
         const subscribersModal = new bootstrap.Modal(document.getElementById('subscribersModal'));

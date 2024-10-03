@@ -54,6 +54,17 @@ async def get_users(username, password, service: AuthService = Depends(get_auth_
     return user
 
 
+@router.get("/user_detail/{user_id}")
+async def get_user_details(
+    user: Annotated[dict, Depends(get_current_user)],
+    user_id: int,
+    service: UserService = Depends(get_user_service)):
+    user = service.get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
 @router.post("/token")
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                                  service: AuthService = Depends(get_auth_service)):

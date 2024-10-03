@@ -113,6 +113,10 @@ async function listSubscribers(eventId) {
     return await apiRequest(`/events/${eventId}/subscribers`, 'GET')
 }
 
+async function getUserDetails(userId) {
+    return await apiRequest(`/users/user_detail/${userId}`, 'GET');
+}
+
 // Content management
 async function createContent(eventId, content, language) {
     return await apiRequest(`/contents/${eventId}/${language}`, 'POST', content );
@@ -155,6 +159,7 @@ export {
     subscribeToEvent,
     unsubscribeFromEvent,
     listSubscribers,
+    getUserDetails,
     createContent,
     listContents,
     updateContent,
