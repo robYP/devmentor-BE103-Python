@@ -125,10 +125,11 @@ class TriggerService:
         route = self.get_event_route(event_id)
         if not route:
             return None
-        
+        event = self.event_repository.search_event_by_id(event_id)
         self.record_repository.create_triggered_record(
-                                       event_id = event_id,
-                                       action = "Event Triggered")
+                                       event_id = event.id,
+                                       action = "Event Triggered",
+                                       event_name = event.name)
         
         if route == "EMAIL":
             success = self.send_email_notification(event_id)

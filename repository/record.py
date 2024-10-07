@@ -7,20 +7,22 @@ class RecordRepository():
         self.db = db
         
         
-    def create_record(self, action: str, user_id: int, event_id: int):
+    def create_record(self, action: str, user_id: int, event_id: int, event_name: str):
         db_record = Record(action=action,
                            user_id= user_id,
-                           event_id=event_id)
+                           event_id=event_id,
+                           event_name = event_name)
         self.db.add(db_record)
         self.db.commit()
         self.db.refresh(db_record)
         return db_record
     
     
-    def create_triggered_record(self, action: str, event_id: int):
+    def create_triggered_record(self, action: str, event_id: int, event_name: str):
         db_record = Record(action=action,
                            user_id=None,
-                           event_id=event_id)
+                           event_id=event_id,
+                           event_name =event_name)
         self.db.add(db_record)
         self.db.commit()
         self.db.refresh(db_record)

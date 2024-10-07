@@ -4,6 +4,7 @@ from datetime import datetime
 
 class RecordBase(BaseModel):
     action: str
+    event_name: str
 
 
 class RecordCreate(RecordBase):

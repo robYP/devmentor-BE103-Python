@@ -1,9 +1,5 @@
 from sqlalchemy.orm import Session
-from repository.event import EventRepository
-from repository.content import ContentRepository
 from repository.record import RecordRepository
-from schema.database.content import ContentCreate
-from schema.database.language import Language
 
 class RecordService:
     def __init__(self, db: Session):

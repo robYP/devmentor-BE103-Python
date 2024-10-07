@@ -14,6 +14,7 @@ async function loadRecords() {
                     <td>${record.action}</td>
                     <td>${record.user_id}</td>
                     <td>${record.event_id}</td>
+                    <td>${record.event_name}</td>
                     <td>${record.created_at}</td>
                 </tr>
             `;

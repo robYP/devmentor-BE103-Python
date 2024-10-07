@@ -13,6 +13,7 @@ class Record(Base):
     action = Column(String(255), nullable=False)
     user_id = Column(Integer, nullable=True)
     event_id = Column(Integer, nullable=True)
+    event_name = Column(String(255), nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     
     user = relationship("User", 
