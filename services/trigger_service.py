@@ -3,6 +3,7 @@ from repository.event import EventRepository
 from repository.event_user import EventUserRepository
 from repository.content import ContentRepository
 from repository.user import UserRepository
+from repository.record import RecordRepository
 from typing import Optional, List, Dict
 from services.email_service import EmailService 
 import re
@@ -15,6 +16,7 @@ class TriggerService:
         self.event_user_repository = EventUserRepository(db)
         self.content_repository = ContentRepository(db)
         self.user_repository = UserRepository(db)
+        self.record_repository = RecordRepository(db)
         self.email_service = EmailService()
 
     def is_valid_email(self, email):
@@ -123,6 +125,10 @@ class TriggerService:
         route = self.get_event_route(event_id)
         if not route:
             return None
+        
+        self.record_repository.create_triggered_record(
+                                       event_id = event_id,
+                                       action = "Event Triggered")
         
         if route == "EMAIL":
             success = self.send_email_notification(event_id)
