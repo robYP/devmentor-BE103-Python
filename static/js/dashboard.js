@@ -11,7 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = e.target.getAttribute('href').substring(1);
+
+            if (targetId === 'records') {
+                loadRecords();
+            }
+            
             showSection(targetId);
+            
         });
     });
 
