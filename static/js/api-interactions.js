@@ -81,7 +81,11 @@ async function handleLineCallback(code, state) {
 
 // Event management
 async function createEvent(name, route) {
-    return await apiRequest('/events/', 'POST', { name, route });
+    const response = await apiRequest('/events/', 'POST', { name, route });
+    if (!response || !response.id) {
+        throw new Error('Failed to create event: No event ID returned');
+    }
+    return response;
 }
 
 async function listEvents(skip = 0, limit = 100) {
@@ -107,6 +111,10 @@ async function unsubscribeFromEvent(eventId) {
 
 async function listSubscribers(eventId) {
     return await apiRequest(`/events/${eventId}/subscribers`, 'GET')
+}
+
+async function getUserDetails(userId) {
+    return await apiRequest(`/users/user_detail/${userId}`, 'GET');
 }
 
 // Content management
@@ -151,6 +159,7 @@ export {
     subscribeToEvent,
     unsubscribeFromEvent,
     listSubscribers,
+    getUserDetails,
     createContent,
     listContents,
     updateContent,
