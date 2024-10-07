@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadEvents();
 
     // Load records
-    // loadRecords();
+    loadRecords();
 
     // Add event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', handleLogout);

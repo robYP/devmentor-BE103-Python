@@ -15,3 +15,7 @@ class RecordRepository():
         self.db.commit()
         self.db.refresh(db_record)
         return db_record
+    
+    
+    def list_records(self, skip: int=0, limit: int= 100 ):
+        return self.db.query(Record).offset(skip).limit(limit).all()
