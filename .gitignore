@@ -1,3 +1,6 @@
 .idea/
 data/
 config/config.py
+# Ignore Python bytecode files
+*.pyc
+__pycache__/
