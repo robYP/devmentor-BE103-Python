@@ -17,21 +17,22 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('registerUsername').value;
+    const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
     const language = document.getElementById('language').value;
-
+    
     if (password !== confirmPassword) {
         alert('Passwords do not match.');
         return;
     }
 
     try {
-        await register(username, password, language);
+        await register(username, email, password, language);
         alert('Registration successful. Please sign in.');
         bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
     } catch (error) {
-        alert('Registration failed. Please try again.');
+        alert('Registration failed: ' + (error.message || 'Please try again.'));
     }
 });
 

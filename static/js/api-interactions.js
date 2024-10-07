@@ -18,7 +18,8 @@ async function apiRequest(endpoint, method, data = null) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
         }
         return await response.json();
     } catch (error) {
@@ -54,11 +55,11 @@ async function login(username, password) {
 
 function logout() {
     localStorage.removeItem('access_token');
-    window.location.href = 'signin.html'; // Redirect to login page
+    window.location.href = '/'; // Redirect to login page
 }
 
-async function register(username, password, language) {
-    return await apiRequest('/users/', 'POST', { username, password, language });
+async function register(username, email, password, language) {
+    return await apiRequest('/users/', 'POST', { username, email, password, language });
 }
 
 async function getCurrentUser() {
@@ -80,7 +81,11 @@ async function handleLineCallback(code, state) {
 
 // Event management
 async function createEvent(name, route) {
-    return await apiRequest('/events/', 'POST', { name, route });
+    const response = await apiRequest('/events/', 'POST', { name, route });
+    if (!response || !response.id) {
+        throw new Error('Failed to create event: No event ID returned');
+    }
+    return response;
 }
 
 async function listEvents(skip = 0, limit = 100) {
@@ -106,6 +111,10 @@ async function unsubscribeFromEvent(eventId) {
 
 async function listSubscribers(eventId) {
     return await apiRequest(`/events/${eventId}/subscribers`, 'GET')
+}
+
+async function getUserDetails(userId) {
+    return await apiRequest(`/users/user_detail/${userId}`, 'GET');
 }
 
 // Content management
@@ -150,6 +159,7 @@ export {
     subscribeToEvent,
     unsubscribeFromEvent,
     listSubscribers,
+    getUserDetails,
     createContent,
     listContents,
     updateContent,

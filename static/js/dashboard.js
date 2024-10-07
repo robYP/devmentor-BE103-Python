@@ -83,6 +83,7 @@ async function loadUserProfile() {
         const user = await getCurrentUser();
         document.getElementById('profileUserId').textContent = user.User['id'];
         document.getElementById('profileUsername').textContent = user.User['username'] || "Social Login";
+        document.getElementById('profileEmail').textContent = user.User.email || "Not provided";
         document.getElementById('profileLanguage').textContent = user.User['language'];
         document.getElementById('profileLineUserId').textContent = user.User['line_user_id'] || 'Not connected';
     } catch (error) {

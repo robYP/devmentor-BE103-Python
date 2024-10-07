@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from api.index import init_api_list
 from infrastructure.mysql import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,3 +33,16 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
+
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Serve index.html
+@app.get("/")
+async def read_index():
+    return FileResponse('static/signin.html')
+
+@app.get("/main.html")
+async def read_index():
+    return FileResponse('static/main.html')
