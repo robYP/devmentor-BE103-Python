@@ -15,7 +15,6 @@ class RecordService:
         return records
 
     def generate_event_distribution_report(self, report_date: date = None):
-        # Fetch records from the database
         records = self.record_repository.list_records()
         
         # Convert the list of SQLAlchemy ORM objects to a list of dictionaries
@@ -33,16 +32,12 @@ class RecordService:
         else:
             records_dicts = []
         
-        # Convert records to a DataFrame (Assuming records is a list of dictionaries)
         df = pd.DataFrame(records_dicts)
-
-        # Filter only the rows where action is 'create event'
         df_create_event = df[df['action'] == 'Create Event']
         
-        # Ensure 'created_at' is in datetime format and extract hour
+        # Ensure 'created_at' is in datetime format
         df_create_event['created_at'] = pd.to_datetime(df['created_at'])
 
-        # If no specific date is provided, use today's date
         if report_date is None:
             report_date = date.today()
             
@@ -56,7 +51,6 @@ class RecordService:
         # Group data by hour and event name for analysis
         event_hourly_distribution = df_create_event.groupby(['hour', 'event_name']).size().unstack(fill_value=0)
 
-        # Generate the plot
         plt.figure(figsize=(14, 6))
         event_hourly_distribution.plot(ax=plt.gca())
         plt.title(f'Event Distribution by Time of Day (Create Events) on {report_date}')
@@ -64,10 +58,8 @@ class RecordService:
         plt.ylabel('Number of Events')
         plt.legend(title='Event Name')
 
-        # Save the plot to a file
         plot_path = f'event_distribution_create_events_{report_date}.png'
         plt.savefig(plot_path)
         plt.close()
         
-        # Return the path of the saved plot
         return plot_path
