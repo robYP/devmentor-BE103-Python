@@ -4,7 +4,6 @@ import { showErrorMessage } from '../dashboard.js';
 
 async function loadRecords() {
     try {
-        console.log("IMRECORDSSS")
         const records = await listRecords();
         const recordsTableBody = document.getElementById('recordsTableBody');
         recordsTableBody.innerHTML = '';
@@ -15,6 +14,8 @@ async function loadRecords() {
                     <td>${record.action}</td>
                     <td>${record.user_id}</td>
                     <td>${record.event_id}</td>
+                    <td>${record.event_name}</td>
+                    <td>${record.created_at}</td>
                 </tr>
             `;
             recordsTableBody.innerHTML += row;

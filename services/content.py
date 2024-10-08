@@ -22,9 +22,6 @@ class ContentService:
     
         if event_exists and not content_exists:
             new_content = self.content_repository.create_content(content=content, event_id=event_id, language=language)
-            self.record_repository.create_record(user_id = user.id,
-                                       event_id = event_id,
-                                       action = "Create Content")
             return new_content
         
         return None
@@ -36,9 +33,6 @@ class ContentService:
         
         if event_exists and content_exists:
             updated_content = self.content_repository.update_content(content_exisits=content_exists, updated_content=content)
-            self.record_repository.create_record(user_id = user.id,
-                                       event_id = updated_content.event_id,
-                                       action = "Update Content")
             return updated_content
         return None
     
@@ -49,8 +43,5 @@ class ContentService:
         
         if event_exists and content_exists: 
             deleted_content = self.content_repository.delete_content(content_exists)
-            self.record_repository.create_record(user_id = user.id,
-                                       event_id = content_exists.event_id,
-                                       action = "Delete Content")
             return deleted_content
         return None

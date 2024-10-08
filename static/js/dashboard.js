@@ -11,7 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = e.target.getAttribute('href').substring(1);
+
+            if (targetId === 'records') {
+                loadRecords();
+            }
+            
             showSection(targetId);
+            
         });
     });
 
@@ -22,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadEvents();
 
     // Load records
-    // loadRecords();
+    loadRecords();
 
     // Add event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', handleLogout);
