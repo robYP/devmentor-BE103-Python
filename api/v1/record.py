@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import Annotated
+from typing import Annotated, Optional
+from datetime import date
 
 from infrastructure.mysql import get_db
 
@@ -25,3 +26,16 @@ def list_records(
     
     return service.list_records(skip=skip, limit=limit)
 
+
+@router.get("/generate_report")
+async def generate_report(
+    user: Annotated[dict, Depends(get_current_user)],
+    service: RecordService = Depends(get_record_service),
+    report_date: Annotated[Optional[date], Query(description="Optional report date in YYYY-MM-DD format")] = None
+):
+    report = service.generate_event_distribution_report(report_date=report_date)
+    
+    if report is None:
+        raise HTTPException(status_code=404, detail="Report Not Generated")
+    
+    return {"detail": "Report successfully generated", "report_path": report}
