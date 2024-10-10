@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
-from datetime import date
+from datetime import date, datetime
 
 from infrastructure.mysql import get_db
 
@@ -20,8 +20,8 @@ def get_record_service(db: Session = Depends(get_db)) -> RecordService:
     return RecordService(db=db)
 
 
-def get_scheduler_service() -> SchedulerService:
-    return SchedulerService()
+def get_scheduler_service(db: Session = Depends(get_db)) -> SchedulerService:
+    return SchedulerService(db=db)
 
 
 @router.get("/")
@@ -56,32 +56,44 @@ async def send_report(
     scheduler_service: SchedulerService = Depends(get_scheduler_service)
 ):
     if record_service.generate_and_send_report(email=email):
-        return {"message": "Report genearted and sent successfully!"}
+        return {"detail": "Report genearted and sent successfully!"}
     else:
-        return {"message": "Error sending report!"}
+        return {"detail": "Error sending report!"}
 
 
-# @router.get("/jobs")
-# async def get_jobs(
-#     user: Annotated[dict, Depends(get_current_user)],
-#     service: SchedulerService = Depends(get_scheduler_service),
-# ):
-#     jobs = service.get_jobs()
-#     return jobs
+@router.get("/jobs")
+async def get_jobs(
+    user: Annotated[dict, Depends(get_current_user)],
+    service: SchedulerService = Depends(get_scheduler_service),
+):
+    jobs = service.get_jobs()
+    return jobs
 
-# @router.post("/jobs", status_code=status.HTTP_201_CREATED)
-# async def add_job(
-#     id: str,
-#     user: Annotated[dict, Depends(get_current_user)],
-#     service: SchedulerService = Depends(get_scheduler_service)
-# ):
-#     return service.add_job(id=id)
+@router.post("/jobs", status_code=status.HTTP_201_CREATED)
+async def add_job(
+    id: str,
+    user: Annotated[dict, Depends(get_current_user)],
+    service: SchedulerService = Depends(get_scheduler_service)
+):
+    return service.add_job(id=id)
 
-# @router.delete("/jobs/{id}", status_code=status.HTTP_204_NO_CONTENT)
-# def delete_job(
-#     id: str,
-#     user: Annotated[dict, Depends(get_current_user)],
-#     service: SchedulerService = Depends(get_scheduler_service)
-# ):
-#     service.remove_job(id)
-#     return 
+@router.delete("/jobs/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_job(
+    id: str,
+    user: Annotated[dict, Depends(get_current_user)],
+    service: SchedulerService = Depends(get_scheduler_service)
+):
+    service.remove_job(id)
+    return
+
+
+@router.post("/schedule_report")
+async def schedule_report(
+    user: Annotated[dict, Depends(get_current_user)],
+    email: str,
+    schedule_time: datetime,
+    record_service: RecordService = Depends(get_record_service),
+    scheduler_service: SchedulerService = Depends(get_scheduler_service)
+):
+    job = scheduler_service.schedule_report(user.id, email, schedule_time, record_service)
+    return {"detail": "Report scheduled successfully", "job_id": job.id}
