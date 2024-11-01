@@ -3,11 +3,12 @@ from repository.record import RecordRepository
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import date
-
+from services.email_service import EmailService 
 
 class RecordService:
     def __init__(self, db: Session):
         self.record_repository = RecordRepository(db)
+        self.email_service = EmailService()
         
     
     def list_records(self, skip: int=0, limit:int=100):
@@ -63,3 +64,14 @@ class RecordService:
         plt.close()
         
         return plot_path
+    
+    
+    def generate_and_send_report(self, email: str):
+        report_path = self.generate_event_distribution_report()
+        
+        if report_path:
+            subject = "Event Distribution Report"
+            body = "Please find attached the event distribution report."
+            self.email_service.send_email(email, subject, body, [report_path])
+            return True
+        return False
