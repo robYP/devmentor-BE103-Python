@@ -11,7 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = e.target.getAttribute('href').substring(1);
+
+            if (targetId === 'records') {
+                loadRecords();
+            }
+            
             showSection(targetId);
+            
         });
     });
 
@@ -22,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadEvents();
 
     // Load records
-    // loadRecords();
+    loadRecords();
 
     // Add event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', handleLogout);
@@ -83,6 +89,7 @@ async function loadUserProfile() {
         const user = await getCurrentUser();
         document.getElementById('profileUserId').textContent = user.User['id'];
         document.getElementById('profileUsername').textContent = user.User['username'] || "Social Login";
+        document.getElementById('profileEmail').textContent = user.User.email || "Not provided";
         document.getElementById('profileLanguage').textContent = user.User['language'];
         document.getElementById('profileLineUserId').textContent = user.User['line_user_id'] || 'Not connected';
     } catch (error) {

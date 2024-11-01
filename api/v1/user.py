@@ -41,6 +41,7 @@ def create_user(user: UserCreate,
                 auth_service: AuthService = Depends(get_auth_service)):
     user = User(
         username = user.username,
+        email = user.email,
         password = auth_service.pwd_context.hash(user.password),
         language = user.language
     )
@@ -50,6 +51,17 @@ def create_user(user: UserCreate,
 @router.post("/get_users")
 async def get_users(username, password, service: AuthService = Depends(get_auth_service)):
     user = service.authenticate_user(username, password)
+    return user
+
+
+@router.get("/user_detail/{user_id}")
+async def get_user_details(
+    user: Annotated[dict, Depends(get_current_user)],
+    user_id: int,
+    service: UserService = Depends(get_user_service)):
+    user = service.get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     return user
 
 

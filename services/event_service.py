@@ -21,8 +21,17 @@ class EventService:
         new_event = self.event_repository.create_event(user=user, event=event)
         self.record_repository.create_record(user_id = user.id,
                                        event_id = new_event.id,
-                                       action = "Create Event")
-        return new_event
+                                       action = "Create Event",
+                                       event_name = new_event.name)
+        # Convert the new_event to a dictionary
+        event_dict = {
+            "id": new_event.id,
+            "name": new_event.name,
+            "route": new_event.route,
+            "create_time": new_event.create_time.isoformat() if new_event.create_time else None,
+            "creator_id": new_event.creator_id
+        }
+        return event_dict
 
 
     def delete_event_by_id(self, user: dict, event_id: int):
@@ -30,7 +39,8 @@ class EventService:
         if event:
             self.record_repository.create_record(user_id = user.id,
                                            event_id = event.id,
-                                           action = "Delete Event")
+                                           action = "Delete Event",
+                                           event_name = event.name)
         return event
 
 
@@ -39,5 +49,6 @@ class EventService:
         if updated_event:
             self.record_repository.create_record(user_id = user.id,
                                        event_id = updated_event.id,
-                                       action = "Update Event")
+                                       action = "Update Event",
+                                       event_name = updated_event.name)
         return updated_event

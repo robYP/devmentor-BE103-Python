@@ -69,6 +69,8 @@
                                     <th>Action</th>
                                     <th>User ID</th>
                                     <th>Event ID</th>
+                                    <th>Event Name</th>
+                                    <th>Created At</th>
                                 </tr>
                             </thead>
                             <tbody id="recordsTableBody"></tbody>
@@ -83,6 +85,7 @@
                             <h5 class="card-title">Personal Information</h5>
                             <p><strong>User ID:</strong> <span id="profileUserId"></span></p>
                             <p><strong>Username:</strong> <span id="profileUsername"></span></p>
+                            <p><strong>Email:</strong> <span id="profileEmail"></span></p>
                             <p><strong>Language:</strong> <span id="profileLanguage"></span></p>
                             <p><strong>LINE User ID:</strong> <span id="profileLineUserId"></span></p>
                         </div>
@@ -115,6 +118,18 @@
                                 <!-- Add more route options as needed -->
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Content</label>
+                            <div id="contentFields">
+                                <div class="content-entry mb-3">
+                                    <select class="form-select mb-2" name="contentLanguage[]">
+                                        <option value="EN">English</option>
+                                        <option value="ZH">Chinese</option>
+                                    </select>
+                                    <textarea class="form-control" name="contentText[]" rows="3" required></textarea>
+                                </div>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary">Create Event</button>
                     </form>
                 </div>
@@ -146,6 +161,11 @@
                                 <!-- Add more route options as needed -->
                             </select>
                         </div>
+                        <hr>
+                        <h6>Event Content</h6>
+                        <div id="editContentList"></div>
+                        <button type="button" class="btn btn-secondary mt-2" id="addEditContentField">Add New Content</button>
+                        <hr>
                         <button type="submit" class="btn btn-primary">Update Event</button>
                     </form>
                 </div>
@@ -191,12 +211,26 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <ul id="subscribersList"></ul>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>LINE ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscribersTableBody">
+                                <!-- Subscriber rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="./js/dashboard.js"></script>
+    <script type="module" src="/static/js/dashboard.js"></script>
 </body>
 </html>
